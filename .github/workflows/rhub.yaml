@@ -66,8 +66,14 @@ jobs:
           job-config: ${{ matrix.config.job-config }}
           # pak ignores Additional_repositories, so cmdstanr (a Suggests, served
           # from stan-dev.r-universe.dev) is unresolvable. Name its source here.
+          # BH/RcppEigen/RcppParallel are rstan's LinkingTo deps: pak skips them
+          # for a binary rstan, but rstan needs their headers at run time to
+          # compile our Stan model, or stan_model() dies with "Boost not found".
           extra-packages: |
             any::rcmdcheck
+            any::BH
+            any::RcppEigen
+            any::RcppParallel
             stan-dev/cmdstanr
       - uses: r-hub/actions/run-check@v1
         with:
@@ -100,8 +106,14 @@ jobs:
           token: ${{ secrets.RHUB_TOKEN }}
           # pak ignores Additional_repositories, so cmdstanr (a Suggests, served
           # from stan-dev.r-universe.dev) is unresolvable. Name its source here.
+          # BH/RcppEigen/RcppParallel are rstan's LinkingTo deps: pak skips them
+          # for a binary rstan, but rstan needs their headers at run time to
+          # compile our Stan model, or stan_model() dies with "Boost not found".
           extra-packages: |
             any::rcmdcheck
+            any::BH
+            any::RcppEigen
+            any::RcppParallel
             stan-dev/cmdstanr
       - uses: r-hub/actions/run-check@v1
         with:
