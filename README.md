@@ -36,7 +36,7 @@ install.packages("cmdstanr", repos = c("https://stan-dev.r-universe.dev", getOpt
 cmdstanr::install_cmdstan()
 
 install.packages("remotes")
-remotes::install_local("cdtmbnma_0.2.0.tar.gz", build_vignettes = TRUE)
+remotes::install_local("cdtmbnma_0.2.1.tar.gz", build_vignettes = TRUE)
 ```
 
 `rstan` can be used instead of `cmdstanr` by installing `rstan` and calling
