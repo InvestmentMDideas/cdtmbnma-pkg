@@ -49,10 +49,14 @@ the same check.
 ## Test environments
 
 * Local: Ubuntu 24.04, R 4.6.0 — `R CMD check --as-cran` (with PDF manual)
-* win-builder: R-devel and R-release — TODO before submitting
-  (`devtools::check_win_devel()` / `check_win_release()`)
-* macOS builder: R-release — TODO (`devtools::check_mac_release()`)
-* R-hub: linux / windows / macos — TODO (`rhub::rhub_check()`)
+* R-hub v2 (GitHub Actions), R-devel on Linux, Windows and macOS — `Status: OK`
+  on all three, with no errors, warnings or notes
+* win-builder: R-devel and R-release — submitted
+* macOS builder: R-release — submitted
+
+On every R-hub platform the `\donttest` examples were executed
+(`checking examples with --run-donttest ... OK`, 71-76 seconds) and raised no
+timing note.
 
 ## R CMD check results
 
