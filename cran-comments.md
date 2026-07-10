@@ -52,7 +52,6 @@ the same check.
 * R-hub v2 (GitHub Actions), R-devel on Linux, Windows and macOS — `Status: OK`
   on all three, with no errors, warnings or notes
 * win-builder: R-devel and R-release — submitted
-* macOS builder: R-release — submitted
 
 On every R-hub platform the `\donttest` examples were executed
 (`checking examples with --run-donttest ... OK`, 71-76 seconds) and raised no
