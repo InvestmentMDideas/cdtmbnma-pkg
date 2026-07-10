@@ -1,0 +1,47 @@
+field,group,prefilled,type,unit,required_for_model,allowed_or_example,extraction_rule
+row_id,ID,yes,int,-,key,1-8,Stable row key. Do not change.
+trial,ID,yes,str,-,key,ETHOS / KRONOS,Source trial.
+nct,ID,yes,str,-,no,NCT02465567,Registry id.
+arm_label,ID,yes,str,-,key,BGF 320/18/9.6,Treatment as named in the paper.
+role,ID,yes,str,-,no,Triple / Dual ...,Human-readable component role.
+device,ID,yes,str,-,no,Aerosphere MDI,Inhaler device. Drives commensurability.
+include_core,ID,yes,0/1,-,key,"1 = include, 0 = exclude",1 for the commensurable BGF family; 0 for the BUD/FORM DPI arm.
+budesonide_ug_ICS,Dose,yes,num,ug/dose (metered),REQUIRED,320 / 160 / 0,ICS component dose. THE dose-varying component (320 vs 160). 0 if absent. Metered-dose labeling; delivered equivalents are the same product.
+formoterol_ug_LABA,Dose,yes,num,ug/dose (metered),REQUIRED,9.6 / 0,LABA component dose. Constant across active arms (Emax will not separate from ED50; report effect at this dose). 0 if absent.
+glycopyrronium_ug_LAMA,Dose,yes,num,ug/dose (metered),REQUIRED,18 / 0,LAMA component dose. Constant across active arms. 0 if absent.
+dosing,Dose,yes,str,-,no,BID,Dosing frequency.
+duration_wk,Design,yes,int,weeks,context,52 / 24,Trial duration. Note ETHOS 52 wk vs KRONOS 24 wk for the time axis and for the exacerbation rate window.
+population_note,Design,yes,str,-,context,see cell,"Eligibility and randomization ratio. Transitivity flag: ETHOS requires >=1 prior exacerbation, KRONOS does not."
+n_randomized,Size,no,int,patients,no,e.g. 2157,Randomized to this arm.
+n_mitt_exac,Size,no,int,patients,REQUIRED (exac),e.g. 2137,mITT analysis N for the exacerbation outcome. Denominator for rates.
+n_fev1,Size,no,int,patients,REQUIRED (FEV1),e.g. 745,"Analysis N for the FEV1 value. In ETHOS this is the 4-h PFT SUB-STUDY, smaller than n_mitt_exac. In KRONOS it is the mITT."
+fev1_metric,FEV1,yes,str,-,context,see cell,Exact FEV1 endpoint definition. Keep per-trial wording.
+fev1_window,FEV1,yes,str,-,context,Week 24 / Weeks 12-24,Timepoint or averaging window. Differs between trials; record both so the model can align or treat as separate times.
+fev1_lsmean_change_mL,FEV1,no,num,mL,REQUIRED,e.g. 142,"PER-ARM least-squares mean CHANGE FROM BASELINE (absolute), NOT the between-arm difference. Pull each arm's own value from the lung-function figure/table."
+fev1_se_mL,FEV1,no,num,mL,REQUIRED*,e.g. 6.5,"Standard error of the per-arm LS mean. *Provide SE, or the 95% CI (next two fields), or SD+N; any one suffices and the analyst derives the rest."
+fev1_ci_low_mL,FEV1,no,num,mL,alt to SE,e.g. 129,Lower 95% CI of the per-arm LS mean change. SE = (hi-lo)/(2*1.96).
+fev1_ci_high_mL,FEV1,no,num,mL,alt to SE,e.g. 155,Upper 95% CI of the per-arm LS mean change.
+fev1_sd_mL,FEV1,no,num,mL,alt to SE,e.g. 180,"Per-arm SD if reported instead of SE; with n_fev1, SE = SD/sqrt(n)."
+exac_definition,Exac,yes,str,-,context,see cell,Exacerbation outcome definition (moderate or severe).
+exac_events,Exac,no,int,count,PREFERRED,e.g. 850,Number of moderate/severe exacerbations in the arm. Best paired with patient-years for a Poisson/negative-binomial rate.
+exac_patient_years,Exac,no,num,patient-years,PREFERRED,e.g. 1800,Total exposure time at risk in the arm. Enables a log-offset rate model (the reviewer's negative-binomial point).
+exac_rate_annual,Exac,no,num,events/pt-year,fallback 1,e.g. 1.08,"Adjusted annualized rate, if events/person-years are not separately reported."
+exac_rate_ci_low,Exac,no,num,events/pt-year,with rate,e.g. 0.97,Lower 95% CI of the annualized rate.
+exac_rate_ci_high,Exac,no,num,events/pt-year,with rate,e.g. 1.20,Upper 95% CI of the annualized rate.
+exac_pts_with_ge1,Exac,no,int,patients,fallback 2,e.g. 720,Patients with >=1 moderate/severe exacerbation. Binomial fallback if only proportions are available.
+exac_n_analyzed,Exac,no,int,patients,with ge1,e.g. 2137,Denominator for exac_pts_with_ge1 (usually = n_mitt_exac).
+age_mean,Covar,no,num,years,optional,e.g. 64.7,Baseline mean age. Transitivity/balance check.
+male_pct,Covar,no,num,%,optional,e.g. 60.1,Percent male.
+fev1_base_mL,Covar,no,num,mL,optional,e.g. 1100,Baseline post-bronchodilator FEV1.
+fev1_base_pct_pred,Covar,no,num,%,optional,e.g. 42.8,Baseline FEV1 percent predicted (severity).
+eos_mean_cells_uL,Covar,no,num,cells/uL,RECOMMENDED,e.g. 180,Baseline blood eosinophils. KEY effect modifier for the ICS component; lets the analyst show balance rather than assume it.
+eos_ge300_pct,Covar,no,num,%,recommended,e.g. 21,"Percent with eosinophils >=300 cells/uL, if the mean is not given."
+exac_hist_mean_prioryr,Covar,no,num,count,optional,e.g. 1.3,Mean moderate/severe exacerbations in the prior year. Transitivity flag (ETHOS vs KRONOS differ).
+current_smoker_pct,Covar,no,num,%,optional,e.g. 40,Percent current smokers.
+source_fev1,Prov,no,str,-,REQUIRED,author year,Citation the FEV1 value came from (e.g. ETHOS lung-function sub-study paper).
+source_exac,Prov,no,str,-,REQUIRED,author year,Citation the exacerbation value came from (primary outcome paper).
+source_baseline,Prov,no,str,-,optional,author year,Citation for the baseline/covariate values.
+source_table_fig,Prov,no,str,-,REQUIRED,Table 2 / Fig 3,Specific table or figure number per value. Add page if helpful.
+extractor,Prov,no,str,-,REQUIRED,initials,Who extracted the row.
+extract_date,Prov,no,date,YYYY-MM-DD,REQUIRED,2026-06-28,Extraction date.
+notes,Prov,yes/no,str,-,optional,free text,"Pre-filled with structural notes; append anything unusual (e.g. value read from a figure, imputation, discrepancy)."

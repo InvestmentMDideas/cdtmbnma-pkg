@@ -1,0 +1,14 @@
+field,prefilled,required_for_model,extraction_rule
+row_id / study / reference,yes,key,"Cell key, trial, citation."
+arm_label / role,yes,no,Cell identity; role = placebo / CCB mono / ARB mono / combination.
+ccb_drug / ccb_mg,yes,REQUIRED,"CCB component (amlodipine, shared across trials) and its mg dose. 0 if absent. Shared, commensurable dose axis."
+arb_drug / arb_mg,yes,REQUIRED,ARB component (valsartan / olmesartan / ...) and its mg dose. 0 if absent. Molecule-specific dose-response.
+n,no,REQUIRED,Patients analysed in the cell.
+sbp_change_mean_mmHg,no,REQUIRED,"PER-ARM LS mean change from baseline in seated SBP at week 8 (the cell's own value, NOT a between-arm difference). Reductions are negative."
+sbp_change_sd / sbp_change_se,no,REQUIRED*,"Per-arm SD or SE of the SBP change. *Either; with n, SE = SD/sqrt(n)."
+dbp_change_mean_mmHg,no,recommended,Per-arm LS mean change from baseline in seated DBP at week 8.
+dbp_change_sd / dbp_change_se,no,recommended,Per-arm SD or SE of the DBP change.
+baseline_sbp_mmHg / baseline_dbp_mmHg,no,optional,Mean baseline BP per arm; balance check.
+age_mean / male_pct,no,optional,Demographics for balance/transitivity.
+source_table / extractor / extract_date,no,REQUIRED,"Provenance: table/figure number, who, when."
+notes,yes/no,optional,Pre-filled with the outcome definition; append anything unusual.

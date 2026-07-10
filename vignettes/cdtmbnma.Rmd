@@ -1,0 +1,134 @@
+---
+title: "Component-dose network meta-analysis with dose-dependent interactions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Component-dose network meta-analysis with dose-dependent interactions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+has_cmdstan <- requireNamespace("cmdstanr", quietly = TRUE) &&
+  !is.null(tryCatch(cmdstanr::cmdstan_version(error_on_NA = FALSE),
+                    error = function(e) NULL))
+run_stan <- has_cmdstan || requireNamespace("rstan", quietly = TRUE)
+```
+
+This vignette shows the basic workflow for `cdtmbnma`. The example is the
+sacubitril and valsartan sitting systolic blood-pressure dose plane. Each row is
+one arm. `d_sac` and `d_val` are component dose columns; zero means absent.
+
+```{r data}
+library(cdtmbnma)
+sv <- sacval_example()
+head(sv)
+```
+
+## Building the single-timepoint design
+
+`cdt_data()` turns the arm-level table into the model design. Studies with an
+all-zero arm use that arm as the within-study reference. Studies without an
+all-zero arm use their lowest-total-dose arm as the baseline and issue a warning.
+
+```{r design}
+d <- cdt_data(
+  sv,
+  study = "study",
+  components = c("d_sac", "d_val"),
+  outcome = "continuous",
+  y = "y",
+  se = "se",
+  dstar = c(d_sac = 200, d_val = 320)
+)
+d
+```
+
+## Fitting the bilinear interaction model
+
+`cdt_fit()` compiles the Stan model on first use and samples. The bilinear
+interaction parameter is interpreted at the `dstar` corner: here, sacubitril 200
+mg and valsartan 320 mg.
+
+```{r fit, eval = run_stan}
+fit <- cdt_fit(
+  d,
+  interaction = "bilinear",
+  chains = 4,
+  iter_warmup = 1000,
+  iter_sampling = 1000,
+  seed = 1
+)
+summary(fit)
+```
+
+The marginal component curves vary one component at a time while holding the
+other at zero.
+
+```{r plot, eval = run_stan, fig.width = 7, fig.height = 4}
+plot(fit)
+```
+
+## Prediction at an unobserved dose pair
+
+`predict()` returns the relative effect against the all-zero reference at any
+component-dose combination, including dose pairs not directly observed in a
+trial.
+
+```{r predict, eval = run_stan}
+predict(fit, newdata = data.frame(d_sac = 100, d_val = 160))
+```
+
+## Additive benchmark
+
+The additive model is fitted by setting `interaction = "none"`.
+
+```{r additive, eval = FALSE}
+fit_add <- cdt_fit(d, interaction = "none")
+```
+
+If the `loo` package is installed, the pointwise log likelihood stored in Stan's
+generated quantities can be used for information-criterion comparisons.
+
+```{r loo, eval = FALSE}
+loo::loo_compare(
+  loo::loo(fit$fit$draws("log_lik")),
+  loo::loo(fit_add$fit$draws("log_lik"))
+)
+```
+
+## Stage-one longitudinal model
+
+The package also contains a narrower two-component longitudinal interface. It is
+useful when repeated arm means over time are available and an exponential
+approach-to-asymptote is reasonable. The example below builds a small design but
+does not fit it during vignette building.
+
+```{r time-design}
+long_dat <- data.frame(
+  study = rep("trial1", 6),
+  arm = rep(c("placebo", "A", "AB"), each = 2),
+  week = rep(c(4, 8), 3),
+  dose_A = rep(c(0, 10, 10), each = 2),
+  dose_B = rep(c(0, 0, 20), each = 2),
+  y = c(0, 0, -1, -2, -2, -3),
+  se = rep(1, 6)
+)
+
+time_design <- cdt_time_data(
+  long_dat,
+  study = "study",
+  arm = "arm",
+  time = "week",
+  components = c("dose_A", "dose_B"),
+  y = "y",
+  se = "se",
+  dstar = c(dose_A = 10, dose_B = 20)
+)
+time_design
+```
+
+```{r time-fit, eval = FALSE}
+fit_time <- cdt_time_fit(time_design)
+predict(fit_time, data.frame(dose_A = 10, dose_B = 20))
+```

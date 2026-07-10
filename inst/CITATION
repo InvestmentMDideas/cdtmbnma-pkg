@@ -1,0 +1,9 @@
+citHeader("To cite cdtmbnma in publications, use:")
+
+bibentry(
+  bibtype = "Manual",
+  title = "cdtmbnma: Component, Dose, and Time Network Meta-Analysis with Dose-Dependent Interactions",
+  author = person(given = "Tyler", family = "Pitre"),
+  year = "2026",
+  note = sprintf("R package version %s", meta$Version)
+)

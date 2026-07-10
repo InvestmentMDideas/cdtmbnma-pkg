@@ -1,0 +1,19 @@
+study,arm,d_sac,d_val,n,y,sd,se,sd_source
+Izzo,Izzo_placebo,0,0,57,-7.0,22.4,2.966952479825698,imputed (per-study median)
+Izzo,Izzo_valsartan320,0,320,143,-16.1,22.2,1.8564572622157414,reported/NMA-table
+Izzo,Izzo_freeSac50_Val320,50,320,132,-19.35,14.62,1.272507665036151,derived from LS-mean SE (sensitivity)
+Izzo,Izzo_freeSac100_Val320,100,320,141,-21.26,14.52,1.2228045893885855,derived from LS-mean SE (sensitivity)
+Izzo,Izzo_freeSac200_Val320,200,320,144,-23.64,14.81,1.2341666666666666,derived from LS-mean SE (sensitivity)
+Izzo,Izzo_freeSac400_Val320,400,320,143,-20.95,14.73,1.2317844807404448,derived from LS-mean SE (sensitivity)
+Izzo,Izzo_LCZ696400,194,320,142,-21.8,22.6,1.8965498697505174,reported/NMA-table
+Huo,Huo_SV200,97,160,477,-20.48,13.3,0.608965166839188,reported/NMA-table
+Huo,Huo_SV400,194,320,469,-21.67,13.4,0.6187545093630776,reported/NMA-table
+Cheung,Cheung_SV200,97,160,188,-14.2,17.6,1.2836119251814722,reported/NMA-table
+Ruilope,Ruilope_SV100,49,80,156,-6.0,13.8,1.1048842612551013,reported/NMA-table
+Ruilope,Ruilope_SV200,97,160,169,-18.7,14.3,1.1,reported/NMA-table
+Ruilope,Ruilope_SV400,194,320,172,-20.2,14.3,1.0903647778781234,reported/NMA-table
+Ruilope,Ruilope_Vals80,0,80,163,-4.7,13.8,1.0808994209833813,reported/NMA-table
+Ruilope,Ruilope_Vals160,0,160,166,-13.4,14.3,1.109895251760056,reported/NMA-table
+Ruilope,Ruilope_Vals320,0,320,164,-14.2,14.3,1.1166423975035336,reported/NMA-table
+Rakugi,Rakugi_SV200,97,160,387,-18.2,12.5,0.6354107097191861,reported/NMA-table
+Rakugi,Rakugi_SV400,194,320,385,-20.2,13.5,0.6880237084407945,reported/NMA-table
